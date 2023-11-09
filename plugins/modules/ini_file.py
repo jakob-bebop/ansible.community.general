@@ -44,7 +44,11 @@ options:
       - If being omitted, the O(option) will be placed before the first O(section).
       - Omitting O(section) is also required if the config format does not support sections.
     type: str
+<<<<<<< HEAD
   section_has_values:
+=======
+  section_has:
+>>>>>>> 6df4cce66 (insert new code)
     type: list
     elements: dict
     required: false
@@ -60,8 +64,12 @@ options:
     description:
       - Among possibly multiple sections of the same name, select the one that contains these values.
       - With O(state=present), if a suitable section is not found, a new section will be added, including the required options.
+<<<<<<< HEAD
       - With O(state=absent), at most one O(section) is removed if it contains the values.
     version_added: 8.5.0
+=======
+      - With O(state=absent), at most one O(section) is removed if it contains the values.    
+>>>>>>> 6df4cce66 (insert new code)
   option:
     description:
       - If set (required for changing a O(value)), this is the name of the option.
@@ -221,6 +229,28 @@ EXAMPLES = r'''
     path: /etc/conf
     option: beverage
     value: lemon juice
+    state: present
+  
+- name: remove the peer configuration for 10.128.0.11/32
+  community.general.ini_file:
+    path: /etc/wireguard/wg0.conf
+    section: Peer
+    section_has:
+      - option: AllowedIps
+        value: 10.4.0.11/32
+    mode: '0600'
+    state: absent
+
+- name: Update the public key for peer 10.128.0.12/32
+  community.general.ini_file:
+    path: /etc/wireguard/wg0.conf
+    section: Peer
+    section_has:
+      - option: AllowedIps
+        value: 10.4.0.12/32
+    option: PublicKey
+    value: xxxxxxxxxxxxxxxxxxxx
+    mode: '0600'
     state: present
 '''
 
