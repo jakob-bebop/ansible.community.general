@@ -204,7 +204,7 @@ EXAMPLES = r'''
     section: Peer
     section_has:
       - option: AllowedIps
-        value: 10.4.0.11/32
+        value: 10.128.0.11/32
     mode: '0600'
     state: absent
 
@@ -214,7 +214,7 @@ EXAMPLES = r'''
     section: Peer
     section_has:
       - option: AllowedIps
-        value: 10.4.0.12/32
+        value: 10.128.0.12/32
     option: PublicKey
     value: xxxxxxxxxxxxxxxxxxxx
     mode: '0600'
