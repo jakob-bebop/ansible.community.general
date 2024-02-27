@@ -21,15 +21,30 @@ except ImportError:
 
 import traceback
 
+
+def _determine_list_all_kwargs(version):
+    gitlab_version = LooseVersion(version)
+    if gitlab_version >= LooseVersion('4.0.0'):
+        # 4.0.0 removed 'as_list'
+        return {'iterator': True, 'per_page': 100}
+    elif gitlab_version >= LooseVersion('3.7.0'):
+        # 3.7.0 added 'get_all'
+        return {'as_list': False, 'get_all': True, 'per_page': 100}
+    else:
+        return {'as_list': False, 'all': True, 'per_page': 100}
+
+
 GITLAB_IMP_ERR = None
 try:
     import gitlab
     import requests
     HAS_GITLAB_PACKAGE = True
+    list_all_kwargs = _determine_list_all_kwargs(gitlab.__version__)
 except Exception:
     gitlab = None
     GITLAB_IMP_ERR = traceback.format_exc()
     HAS_GITLAB_PACKAGE = False
+    list_all_kwargs = {}
 
 
 def auth_argument_spec(spec=None):
@@ -59,11 +74,11 @@ def find_project(gitlab_instance, identifier):
 
 def find_group(gitlab_instance, identifier):
     try:
-        project = gitlab_instance.groups.get(identifier)
+        group = gitlab_instance.groups.get(identifier)
     except Exception as e:
         return None
 
-    return project
+    return group
 
 
 def ensure_gitlab_package(module):
@@ -75,6 +90,8 @@ def ensure_gitlab_package(module):
 
 
 def gitlab_authentication(module):
+    ensure_gitlab_package(module)
+
     gitlab_url = module.params['api_url']
     validate_certs = module.params['validate_certs']
     ca_path = module.params['ca_path']
@@ -83,8 +100,6 @@ def gitlab_authentication(module):
     gitlab_token = module.params['api_token']
     gitlab_oauth_token = module.params['api_oauth_token']
     gitlab_job_token = module.params['api_job_token']
-
-    ensure_gitlab_package(module)
 
     verify = ca_path if validate_certs and ca_path else validate_certs
 
