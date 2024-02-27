@@ -44,11 +44,7 @@ options:
       - If being omitted, the O(option) will be placed before the first O(section).
       - Omitting O(section) is also required if the config format does not support sections.
     type: str
-<<<<<<< HEAD
   section_has_values:
-=======
-  section_has:
->>>>>>> 6df4cce66 (insert new code)
     type: list
     elements: dict
     required: false
